@@ -4,6 +4,9 @@ config :pleroma, Pleroma.Web.Endpoint,
   url: [host: System.get_env("DOMAIN", "localhost"), scheme: "https", port: 443],
   http: [ip: {0, 0, 0, 0}, port: 4000]
 
+config :pleroma, :shout,
+  enabled: false
+
 config :pleroma, :instance,
   name: System.get_env("INSTANCE_NAME", "Pleroma"),
   email: System.get_env("ADMIN_EMAIL"),
@@ -11,7 +14,8 @@ config :pleroma, :instance,
   limit: 5000,
   registrations_open: false,
   federating: true,
-  healthcheck: true
+  healthcheck: true,
+  static_dir: "/var/lib/pleroma/static"
 
 config :pleroma, :media_proxy,
   enabled: false,
@@ -26,11 +30,12 @@ config :pleroma, Pleroma.Repo,
   hostname: System.get_env("DB_HOST", "db"),
   pool_size: 10
 
+config :pleroma, configurable_from_database: true
+
 # Configure web push notifications
 config :web_push_encryption, :vapid_details, subject: "mailto:#{System.get_env("NOTIFY_EMAIL")}"
 
 config :pleroma, :database, rum_enabled: false
-config :pleroma, :instance, static_dir: "/var/lib/pleroma/static"
 config :pleroma, Pleroma.Uploaders.Local, uploads: "/var/lib/pleroma/uploads"
 config :pleroma, Pleroma.Upload.Filter.Mogrify, args: ["strip"]
 config :pleroma, Pleroma.Upload,
