@@ -1,4 +1,3 @@
-#
 name: Create and publish a Docker image
 
 on:
@@ -11,6 +10,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  PLEROMA_VER: v2.6.0
 
 # There is a single job in this workflow. It's configured to run on the latest available version of Ubuntu.
 jobs:
@@ -48,7 +48,9 @@ jobs:
           context: .
           push: true
           platforms: linux/arm64
-          tags: ${{ steps.meta.outputs.tags }}
+          build-args: |
+            PLEROMA_VER=${{ env.PLEROMA_VER }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.PLEROMA_VER }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
