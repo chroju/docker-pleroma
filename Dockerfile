@@ -1,9 +1,10 @@
-FROM elixir:1.11.4-alpine
+FROM elixir:1.17.3-alpine
 
 ARG PLEROMA_VER=develop
 ARG UID=911
 ARG GID=911
 ENV MIX_ENV=prod
+ENV ERL_AFLAGS="+JMsingle true"
 
 RUN echo "http://nl.alpinelinux.org/alpine/latest-stable/main" >> /etc/apk/repositories \
     && apk update \
@@ -23,8 +24,10 @@ RUN mkdir -p /etc/pleroma \
 USER pleroma
 WORKDIR /pleroma
 
-RUN git clone -b develop https://git.pleroma.social/pleroma/pleroma.git /pleroma \
-    && git checkout ${PLEROMA_VER} 
+RUN git init \
+    && git remote add origin https://git.pleroma.social/pleroma/pleroma.git \
+    && git fetch --depth 1 origin tag ${PLEROMA_VER} \
+    && git checkout tags/${PLEROMA_VER}
 
 RUN echo "import Mix.Config" > config/prod.secret.exs \
     && mix local.hex --force \
