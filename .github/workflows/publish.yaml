@@ -11,7 +11,7 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
   # renovate: datasource=gitlab-releases depName=pleroma/pleroma versioning=semver-coerced registryUrl=https://git.pleroma.social
-  PLEROMA_VERSION: v2.6.0
+  PLEROMA_VERSION: v2.7.0
 
 # There is a single job in this workflow. It's configured to run on the latest available version of Ubuntu.
 jobs:
