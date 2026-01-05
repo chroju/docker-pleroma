@@ -50,8 +50,8 @@ jobs:
           push: true
           platforms: linux/arm64
           build-args: |
-            PLEROMA_VER=${{ env.PLEROMA_VER }}
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.PLEROMA_VER }}
+            PLEROMA_VER=${{ env.PLEROMA_VERSION }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.PLEROMA_VERSION }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
