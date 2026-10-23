@@ -15,8 +15,9 @@
   ],
   "packageRules": [
     {
-      "description": "Pleroma の版の更新は自動でマージする（マージでイメージが作られる。デプロイは infrastructure 側で判断する）",
+      "description": "Pleroma のマイナー版・パッチ版の更新は自動でマージする（マージでイメージが作られる。デプロイは infrastructure 側で判断する）。メジャー版は人が確認する",
       "matchPackageNames": ["pleroma/pleroma"],
+      "matchUpdateTypes": ["minor", "patch"],
       "automerge": true
     }
   ]
