@@ -5,6 +5,9 @@ ARG UID=911
 ARG GID=911
 ENV MIX_ENV=prod
 ENV ERL_AFLAGS="+JMsingle true"
+# latest-stable の CMake 4 は cmake_minimum_required が 3.5 未満の CMakeLists.txt を拒否する。
+# 依存の fast_html（lexbor）が該当するため、互換モードで設定を通す
+ENV CMAKE_POLICY_VERSION_MINIMUM=3.5
 
 RUN echo "http://nl.alpinelinux.org/alpine/latest-stable/main" >> /etc/apk/repositories \
     && apk update \
