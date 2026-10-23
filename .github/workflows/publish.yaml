@@ -2,15 +2,34 @@ name: Create and publish a Docker image
 
 on:
   workflow_dispatch:
-  # push:
-  #   branches:
-  #     - master
+    inputs:
+      pleroma_version:
+        description: "Pleroma version to build (defaults to PLEROMA_VERSION)"
+        required: false
+      tag_suffix:
+        description: "Suffix appended to the image tag, e.g. -ca1 (keeps an existing tag from being overwritten)"
+        required: false
+  # Renovate が PLEROMA_VERSION を上げた PR のマージなど、イメージの中身が変わったときに作る
+  push:
+    branches:
+      - master
+    paths:
+      - Dockerfile
+      - config.exs
+      - .github/workflows/publish.yaml
+  # 版が変わらなくても、Alpine の CA 証明書やパッケージの更新を取り込むために毎週作り直す
+  schedule:
+    - cron: "23 18 * * 0" # 月曜 03:23 JST
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
 
 # Defines two custom environment variables for the workflow. These are used for the Container registry domain, and a name for the Docker image that this workflow builds.
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  # renovate: datasource=gitlab-releases depName=pleroma/pleroma versioning=semver-coerced registryUrl=https://git.pleroma.social
+  # renovate: datasource=forgejo-tags depName=pleroma/pleroma versioning=semver-coerced registryUrl=https://git.pleroma.social
   PLEROMA_VERSION: v2.10.0
 
 # There is a single job in this workflow. It's configured to run on the latest available version of Ubuntu.
@@ -50,8 +69,10 @@ jobs:
           push: true
           platforms: linux/arm64
           build-args: |
-            PLEROMA_VER=${{ env.PLEROMA_VERSION }}
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.PLEROMA_VERSION }}
+            PLEROMA_VER=${{ inputs.pleroma_version || env.PLEROMA_VERSION }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.pleroma_version || env.PLEROMA_VERSION }}${{ inputs.tag_suffix }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          # 定期実行ではキャッシュを使わず、apk のパッケージを取り直す
+          no-cache: ${{ github.event_name == 'schedule' }}
