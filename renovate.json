@@ -12,5 +12,12 @@
         "\\s*# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?) versioning=(?<versioning>.*?) registryUrl=(?<registryUrl>.*?)\\s*\\n\\s*.*_VERSION: (?<currentValue>.*)\\s*"
       ]
     }
+  ],
+  "packageRules": [
+    {
+      "description": "Pleroma の版の更新は自動でマージする（マージでイメージが作られる。デプロイは infrastructure 側で判断する）",
+      "matchPackageNames": ["pleroma/pleroma"],
+      "automerge": true
+    }
   ]
 }
