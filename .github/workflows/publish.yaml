@@ -2,6 +2,13 @@ name: Create and publish a Docker image
 
 on:
   workflow_dispatch:
+    inputs:
+      pleroma_version:
+        description: "Pleroma version to build (defaults to PLEROMA_VERSION)"
+        required: false
+      tag_suffix:
+        description: "Suffix appended to the image tag, e.g. -ca1 (keeps an existing tag from being overwritten)"
+        required: false
   # push:
   #   branches:
   #     - master
@@ -50,8 +57,8 @@ jobs:
           push: true
           platforms: linux/arm64
           build-args: |
-            PLEROMA_VER=${{ env.PLEROMA_VERSION }}
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.PLEROMA_VERSION }}
+            PLEROMA_VER=${{ inputs.pleroma_version || env.PLEROMA_VERSION }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.pleroma_version || env.PLEROMA_VERSION }}${{ inputs.tag_suffix }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
