@@ -15,10 +15,15 @@
   ],
   "packageRules": [
     {
-      "description": "Pleroma のマイナー版・パッチ版の更新は自動でマージする（マージでイメージが作られる。デプロイは infrastructure 側で判断する）。メジャー版は人が確認する",
+      "description": "Automerge minor and patch Pleroma updates (merging builds the image; deployment is gated in chroju/infrastructure). Major updates need a human.",
       "matchPackageNames": ["pleroma/pleroma"],
       "matchUpdateTypes": ["minor", "patch"],
       "automerge": true
+    },
+    {
+      "description": "Ignore the stray v3.0.0 tag on git.pleroma.social: it was created years ago and is not an actual release.",
+      "matchPackageNames": ["pleroma/pleroma"],
+      "allowedVersions": "!/^v3\\.0\\.0$/"
     }
   ]
 }
