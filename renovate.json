@@ -19,6 +19,11 @@
       "matchPackageNames": ["pleroma/pleroma"],
       "matchUpdateTypes": ["minor", "patch"],
       "automerge": true
+    },
+    {
+      "description": "Pleroma の v3.0.0 タグは公式のリリース一覧になく、依存ライブラリも v2.10 系より古い（現行の Elixir でビルドできない）ため提案させない",
+      "matchPackageNames": ["pleroma/pleroma"],
+      "allowedVersions": "!/^v3\\.0\\.0$/"
     }
   ]
 }
