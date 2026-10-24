@@ -43,10 +43,13 @@ RUN git init \
 
 # certifi と castore が同梱する CA バンドルは更新が遅れるため、システムの CA ストアで上書きする
 # （certifi は cacerts.pem をコンパイル時に取り込むので、mix release より前に置き換える）
+# ssl_verify_fun 1.1.6 は Elixir 1.15 以降のコードパスの絞り込みで public_key.hrl を見つけられず
+# コンパイルに失敗するため、修正版の 1.1.7 以上へ上げる（すでに 1.1.7 なら何も変わらない）
 RUN echo "import Mix.Config" > config/prod.secret.exs \
     && mix local.hex --force \
     && mix local.rebar --force \
     && mix deps.get --only prod \
+    && mix deps.update ssl_verify_fun \
     && cp /etc/ssl/certs/ca-certificates.crt deps/certifi/priv/cacerts.pem \
     && cp /etc/ssl/certs/ca-certificates.crt deps/castore/priv/cacerts.pem \
     && mkdir release \
